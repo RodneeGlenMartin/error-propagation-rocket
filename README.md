@@ -19,7 +19,7 @@ This project follows the assignment requirements:
 
 ### Console output
 
-Running `python error_propagation_rocket.py --table-only` prints the comparison table (Leibniz π at terms 20, 40, 60, 100; trunc vs round baseline; gap):
+Running `python error_propagation_rocket.py --table-only` prints the comparison table. The exact numbers and an explanation of when the gap is 0 vs 0.0001 are in the [Results](#results) section below.
 
 ![Console output: Error Propagation table](assets/console.png?v=2)
 
@@ -93,6 +93,29 @@ python error_propagation_rocket.py --viz
 python error_propagation_rocket.py --steps 10 50 100
 ```
 
+## Results
+
+Running the script produces the following table at the **20th, 40th, 60th, and 100th term** of the Leibniz series:
+
+| Term | Partial π | Trunc (4 dec) | Round (4 dec) | Gap |
+|------|-----------|---------------|---------------|-----|
+| 20   | 3.091623806667840 | 3.0916 | 3.0916 | 0.000000000000000 |
+| 40   | 3.116596556793833 | 3.1165 | 3.1166 | 0.000100000000000 |
+| 60   | 3.124927143928997 | 3.1249 | 3.1249 | 0.000000000000000 |
+| 100  | 3.131592903558554 | 3.1315 | 3.1316 | 0.000100000000000 |
+
+**Why is the gap zero at term 20 and 60 but not at 40 and 100?**  
+The **gap** is the difference between “round to 4 decimals” and “truncate to 4 decimals”. That difference is 0 when the **5th decimal digit** of the partial π is 0–4 (rounding does not change the 4th decimal), and it is **0.0001** when the 5th digit is 5–9 (rounding bumps the 4th decimal up by one). So:
+
+- **Term 20:** partial π = 3.091**6**23806… → 5th decimal is **2** → trunc and round both give 3.0916 → **Gap = 0**.
+- **Term 40:** partial π = 3.116**5**96556… → 5th decimal is **9** → trunc 3.1165, round 3.1166 → **Gap = 0.0001**.
+- **Term 60:** partial π = 3.124**9**27143… → 5th decimal is **2** → both give 3.1249 → **Gap = 0**.
+- **Term 100:** partial π = 3.131**5**92903… → 5th decimal is **9** → trunc 3.1315, round 3.1316 → **Gap = 0.0001**.
+
+So the Leibniz results are correct: the gap appears only when rounding to 4 decimals changes the value relative to truncation.
+
+---
+
 ## Mathematical Explanation
 
 **Formula that calculates π (Leibniz/Gregory series):**
@@ -103,12 +126,12 @@ $$
 
 So $\pi = 4 \sum_{k=0}^{n-1} \frac{(-1)^k}{2k+1}$ after $n$ terms.
 
-**Baselines:** We take each partial sum and form two approximations:
+**Baselines:** At each term we take the partial sum and form two 4-decimal approximations:
 
-- **Truncate to 4 decimals** (e.g. 3.1415): discard digits after the 4th decimal.
-- **Round to 4 decimals** (e.g. 3.1416): round to 4 decimal places.
+- **Truncate to 4 decimals:** keep only the first four decimals (e.g. 3.14159265… → 3.1415).
+- **Round to 4 decimals:** round at the fourth decimal (e.g. 3.14159265… → 3.1416 when the 5th digit ≥ 5).
 
-**20th, 40th, 60th, 100th:** The table shows the value of π at the **20th, 40th, 60th, and 100th term** of this series: the partial sum, the truncated value, the rounded value, and the **gap** (difference between the two baselines) at each of those terms.
+**Reported terms:** The table and the rocket visualization both report the **20th, 40th, 60th, and 100th term**: partial π, trunc (4 dec), round (4 dec), and the **gap** (absolute difference between the two baselines) at each of those terms.
 
 ## Features
 
