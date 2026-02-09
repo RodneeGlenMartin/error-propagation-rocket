@@ -4,14 +4,17 @@ A visualization demonstrating how a tiny difference in π (3.1415 vs 3.1416) pro
 
 ## What It Demonstrates
 
-This project illustrates **error propagation in numerical computation**. Using two common 4-decimal approximations of π—**truncated** (3.1415) and **rounded** (3.1416)—it shows how the resulting vector magnitude \(\|\vec{v}\| = \sqrt{(\pi n)^2 + n^2}\) grows more sensitive to the value of π as the step count \(n\) increases. The console table and turtle animation make the "gap" between the two results visible and intuitive.
+This project illustrates **error propagation in numerical computation**. Using two common 4-decimal approximations of π—**truncated** (3.1415) and **rounded** (3.1416)—it shows how the resulting vector magnitude $\|\vec{v}\| = \sqrt{(\pi n)^2 + n^2}$ grows more sensitive to the value of π as the step count $n$ increases. The console table and turtle animation make the "gap" between the two results visible and intuitive.
 
 ## Visual Preview
 
 ![Rocket Vector Quadrature Error — final state at step 100](assets/100.png)
 
-Step-by-step views (highlighted steps): [20](assets/20.png) · [40](assets/40.png) · [60](assets/60.png) · [100](assets/100.png)  
-Animated: [rocket.gif](assets/rocket.gif)
+Step-by-step views (highlighted steps): [20](assets/20.png) · [40](assets/40.png) · [60](assets/60.png) · [100](assets/100.png)
+
+**Animated preview:**
+
+![Animated rocket visualization](assets/rocket.gif)
 
 ## Requirements
 
@@ -63,19 +66,19 @@ python error_propagation_rocket.py --steps 10 50 100
 
 ## Mathematical Explanation
 
-We define a "rocket" vector in the plane whose horizontal component is \(\pi \cdot n\) and vertical component is \(n\) (where \(n\) is the step index):
+We define a "rocket" vector in the plane whose horizontal component is $\pi \cdot n$ and vertical component is $n$ (where $n$ is the step index):
 
-\[
+$$
 \vec{v} = (\pi \cdot n,\, n)
-\]
+$$
 
 The magnitude (Euclidean length) is:
 
-\[
-\|\vec{v}\| = \sqrt{(\pi n)^2 + n^2} = n\sqrt{\pi^2 + 1}.
-\]
+$$
+\|\vec{v}\| = \sqrt{(\pi n)^2 + n^2} = n\sqrt{\pi^2 + 1}
+$$
 
-Using \(\pi \approx 3.1415\) (truncated) vs \(\pi \approx 3.1416\) (rounded) gives two slightly different magnitudes. The **Gap** in the table is \(|\|\vec{v}_{\text{round}}\| - \|\vec{v}_{\text{trunc}}\||\). As \(n\) increases, this gap grows, illustrating how a small error in π propagates through the formula.
+Using $\pi \approx 3.1415$ (truncated) vs $\pi \approx 3.1416$ (rounded) gives two slightly different magnitudes. The **Gap** in the table is $\bigl|\|\vec{v}_{\text{round}}\| - \|\vec{v}_{\text{trunc}}\|\bigr|$. As $n$ increases, this gap grows, illustrating how a small error in $\pi$ propagates through the formula.
 
 ## Features
 
