@@ -21,29 +21,29 @@ This project follows the assignment requirements:
 
 Running `python error_propagation_rocket.py --table-only` prints the comparison table (Leibniz π at terms 20, 40, 60, 100; trunc vs round baseline; gap):
 
-![Console output: Error Propagation table](assets/console.png)
+![Console output: Error Propagation table](assets/console.png?v=2)
 
 ### Rocket visualization (step-by-step)
 
 **Term 20**
 
-![Term 20](assets/20.png)
+![Term 20](assets/20.png?v=2)
 
 **Term 40**
 
-![Term 40](assets/40.png)
+![Term 40](assets/40.png?v=2)
 
 **Term 60**
 
-![Term 60](assets/60.png)
+![Term 60](assets/60.png?v=2)
 
 **Term 100**
 
-![Term 100](assets/100.png)
+![Term 100](assets/100.png?v=2)
 
 **Animated**
 
-![Rocket animation](assets/rocket.gif)
+![Rocket animation](assets/rocket.gif?v=2)
 
 ## Requirements
 
