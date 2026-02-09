@@ -3,54 +3,59 @@
 ![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-My Computational Lab Assignment about error propagation: how a tiny difference in π (3.1415 vs 3.1416) propagates through vector magnitude calculations.
+My Computational Lab Assignment about error propagation: a formula that **calculates** π (Leibniz series), with baselines 3.1415 and 3.1416 (truncate vs round to 4 decimals), showing the 20th, 40th, 60th, and 100th term and the gap between the two baselines.
 
 ## What It Demonstrates
 
-This project illustrates **error propagation in numerical computation**. Using two common 4-decimal approximations of π—**truncated** (3.1415) and **rounded** (3.1416)—it shows how the resulting vector magnitude $\|\vec{v}\| = \sqrt{(\pi n)^2 + n^2}$ grows more sensitive to the value of π as the step count $n$ increases. The console table and turtle animation make the "gap" between the two results visible and intuitive.
+This project follows the assignment requirements:
+
+- **A formula that uses/calculates π** — We use the **Leibniz/Gregory series** to compute π: $\frac{\pi}{4} = 1 - \frac{1}{3} + \frac{1}{5} - \frac{1}{7} + \cdots$
+- **Baselines 3.1416 and 3.1415** — These are the **starting approximations**: one is π truncated to 4 decimal places (3.1415), the other rounded to 4 decimals (3.1416). At each step we compare these two ways of approximating.
+- **20th, 40th, 60th, 100th** — We report the value of π at the **20th, 40th, 60th, and 100th term** of the Leibniz series for both baselines (truncate to 4 dec vs round to 4 dec).
+- **The gap** — At each of those terms we show the **difference** between the truncated and rounded baseline so you can see how the small difference propagates.
+- **Present using Python** — Table plus **rocket visualization**: two rockets driven by π from Leibniz at each step (trunc vs round baseline).
 
 ## Visual Preview
 
 ### Console output
 
-Running `python error_propagation_rocket.py --table-only` prints the comparison table:
+Running `python error_propagation_rocket.py --table-only` prints the comparison table (Leibniz π at terms 20, 40, 60, 100; trunc vs round baseline; gap):
 
 ![Console output: Error Propagation table](assets/console.png)
 
-### Turtle visualization (step-by-step)
+### Rocket visualization (step-by-step)
 
-**Step 20**
+**Term 20**
 
-![Step 20](assets/20.png)
+![Term 20](assets/20.png)
 
-**Step 40**
+**Term 40**
 
-![Step 40](assets/40.png)
+![Term 40](assets/40.png)
 
-**Step 60**
+**Term 60**
 
-![Step 60](assets/60.png)
+![Term 60](assets/60.png)
 
-**Step 100**
+**Term 100**
 
-![Step 100](assets/100.png)
+![Term 100](assets/100.png)
 
-### Animated preview
+**Animated**
 
-![Animated rocket visualization](assets/rocket.gif)
+![Rocket animation](assets/rocket.gif)
 
 ## Requirements
 
 - **Python** 3.7 or higher
-- **mpmath** (high-precision arithmetic)
-- **turtle** (included in the Python standard library)
+- **turtle** (included in the Python standard library; only needed for `--viz`)
 
 ## Installation
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/RodneeGlenMartin/error-propagation-rocket.git
-   cd error_propagation_rocket
+   git clone https://github.com/RodneeGlenMartin/Martin_lab_assignment_1_computational_science.git
+   cd Martin_lab_assignment_1_computational_science
    ```
 
 2. (Recommended) Create and activate a virtual environment:
@@ -60,10 +65,11 @@ Running `python error_propagation_rocket.py --table-only` prints the comparison 
    # source .venv/bin/activate   # macOS/Linux
    ```
 
-3. Install dependencies:
+3. (Optional) Install dependencies if you add any later:
    ```bash
    pip install -r requirements.txt
    ```
+   The script runs with the standard library only (turtle is built-in).
 
 ## Usage
 
@@ -76,43 +82,41 @@ python error_propagation_rocket.py
 
 | Flag | Description |
 |------|-------------|
-| `--table-only` | Print the comparison table and exit (no turtle window). |
-| `--viz-only`   | Skip the table and run only the turtle visualization. |
-| `--steps 20 40 60 100` | Override which steps are highlighted in the table and in the animation (space-separated integers). |
+| `--table-only` | Print the comparison table and exit (no visualization). |
+| `--viz`        | Show only the rocket visualization (no console table). |
+| `--steps 20 40 60 100` | Which terms to report (default: 20 40 60 100). |
 
 Examples:
 ```bash
 python error_propagation_rocket.py --table-only
-python error_propagation_rocket.py --viz-only
+python error_propagation_rocket.py --viz
 python error_propagation_rocket.py --steps 10 50 100
 ```
 
 ## Mathematical Explanation
 
-We define a "rocket" vector in the plane whose horizontal component is $\pi \cdot n$ and vertical component is $n$ (where $n$ is the step index):
+**Formula that calculates π (Leibniz/Gregory series):**
 
 $$
-\vec{v} = (\pi \cdot n,\, n)
+\frac{\pi}{4} = 1 - \frac{1}{3} + \frac{1}{5} - \frac{1}{7} + \frac{1}{9} - \cdots
 $$
 
-The magnitude (Euclidean length) is:
+So $\pi = 4 \sum_{k=0}^{n-1} \frac{(-1)^k}{2k+1}$ after $n$ terms.
 
-$$
-\|\vec{v}\| = \sqrt{(\pi n)^2 + n^2} = n\sqrt{\pi^2 + 1}
-$$
+**Baselines:** We take each partial sum and form two approximations:
 
-Using $\pi \approx 3.1415$ (truncated) vs $\pi \approx 3.1416$ (rounded) gives two slightly different magnitudes. The **Gap** in the table is the absolute difference between them:
+- **Truncate to 4 decimals** (e.g. 3.1415): discard digits after the 4th decimal.
+- **Round to 4 decimals** (e.g. 3.1416): round to 4 decimal places.
 
-$$\text{Gap} = \left| \lVert \vec{v}_{\text{round}} \rVert - \lVert \vec{v}_{\text{trunc}} \rVert \right|$$
-
-As $n$ increases, this gap grows, illustrating how a small error in $\pi$ propagates through the formula.
+**20th, 40th, 60th, 100th:** The table shows the value of π at the **20th, 40th, 60th, and 100th term** of this series: the partial sum, the truncated value, the rounded value, and the **gap** (difference between the two baselines) at each of those terms.
 
 ## Features
 
-- **Console comparison table** — Steps 1–100 with emphasis on 20, 40, 60, 100; columns: Step, Vec Trunc, Vec Round, The Gap.
-- **Turtle animation** — Two trajectories (green = truncated π, cyan = rounded π) with amplified angle difference so the divergence is visible.
-- **High-precision math** — Uses `mpmath` (50 decimal places) for accurate comparison.
-- **Configurable steps** — Override which steps are highlighted via `--steps`.
+- **Formula that calculates π** — Leibniz/Gregory series (no external π; we compute it).
+- **Baselines 3.1415 and 3.1416** — Truncate vs round to 4 decimals at each step.
+- **20th, 40th, 60th, 100th term** — Table reports partial π, trunc (4 dec), round (4 dec), and the gap at each of these terms.
+- **Console table** — Columns: Term, Partial π, Trunc (4 dec), Round (4 dec), Gap.
+- **Rocket visualization (Leibniz-connected)** — Two rockets trace trajectories using π from the Leibniz series at each step: green = truncated to 4 dec, cyan = rounded to 4 dec. The vector magnitude and gap are shown at terms 20, 40, 60, 100. Run with `--viz` for rockets only, or run with no flags for table then rockets.
 
 ## Educational Context
 
@@ -130,3 +134,4 @@ This project was completed as part of a **computational lab assignment** to demo
 ## License
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+

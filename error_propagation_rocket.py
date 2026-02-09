@@ -1,132 +1,136 @@
 """
-Error Propagation Rocket — visualization of how a small difference in π (3.1415 vs 3.1416)
-propagates through the vector magnitude formula sqrt((π·step)² + step²).
+Computational Lab Assignment: Error propagation in π approximation.
 
-Run with Python to see a console comparison table and a turtle animation of the two
-trajectories. Use --table-only or --viz-only to run only one part; use --steps to
-customize which steps are highlighted.
+Uses a formula that CALCULATES π (Leibniz/Gregory series). The baselines 3.1415 and 3.1416
+are the truncated vs rounded values to 4 decimal places. The script shows the value of π
+at the 20th, 40th, 60th, and 100th term of the series for both baselines and the gap between them.
+
+Rocket visualization: two rockets are driven by pi from Leibniz at each step (trunc vs round).
+Run with Python for table + rockets; --viz for rockets only.
 """
 
 import argparse
-from typing import List, Optional
+import math
 import time
-import turtle
-import mpmath
+from typing import List, Optional
 
-# ---------------------------------------------------------------------------
-# High-precision and π baselines
-# ---------------------------------------------------------------------------
-mpmath.mp.dps = 50
-PI_HI = mpmath.pi
-# Baselines per instructions: 3.1416 and 3.1415 (used in formula for comparison)
-PI_BASELINE_1 = mpmath.mpf("3.1416")
-PI_BASELINE_2 = mpmath.mpf("3.1415")
-# For display: baseline_2 is truncation of π at 4 decimals, baseline_1 is rounded
-PI_TRUNC = PI_BASELINE_2
-PI_ROUND = PI_BASELINE_1
-
-# Steps highlighted in table and animation (can be overridden via --steps)
+# Terms at which we report (assignment: 20th, 40th, 60th, 100th)
 STEPS = [20, 40, 60, 100]
-# Table: steps 1..MAX_STEP printed; only those in STEPS are shown per row
+DECIMAL_PLACES = 4
 MAX_STEP = 100
-# Angle in visualization: angle = π * step / ANGLE_DIVISOR (radians)
 ANGLE_DIVISOR = 50.0
-
-# Turtle visualization tuning
 SCALE = 3.5
 VISUAL_AMPLIFICATION = 500
 STEP_DELAY = 0.05
 STOP_AT_STEP_SEC = 0.8
 
 
-def calculate_quadrature_vector(pi_value: mpmath.mpf, step: int) -> mpmath.mpf:
+def compute_pi_leibniz(n_terms: int) -> float:
     """
-    Rocket diagonal vector magnitude: sqrt((pi*step)² + step²).
+    Compute π using the Leibniz/Gregory series: π/4 = 1 - 1/3 + 1/5 - 1/7 + ...
 
-    Represents the Euclidean length of the vector (π·step, step). Used to compare
-    how truncated vs rounded π affect the result as step increases.
+    This is a formula that CALCULATES π (as required by the assignment).
 
     Args:
-        pi_value: Value of π (e.g. PI_TRUNC or PI_ROUND).
-        step: Step index (positive integer).
+        n_terms: Number of terms to sum.
 
     Returns:
-        Magnitude as an mpmath float.
-
-    Raises:
-        ValueError: If step is not positive.
+        Approximation of π after n_terms.
     """
-    if step <= 0:
-        raise ValueError(f"step must be positive, got {step}")
-    if step > 1_000_000:
-        raise ValueError(f"step too large (max 1000000), got {step}")
-    return mpmath.sqrt((pi_value * step) ** 2 + step**2)
+    if n_terms <= 0:
+        raise ValueError(f"n_terms must be positive, got {n_terms}")
+    total = 0.0
+    for k in range(n_terms):
+        total += (-1) ** k / (2 * k + 1)
+    return 4.0 * total
+
+
+def truncate_to_n_decimals(value: float, n: int) -> float:
+    """Truncate value to n decimal places (baseline 1: 3.1415 style)."""
+    factor = 10 ** n
+    return int(value * factor) / factor
+
+
+def round_to_n_decimals(value: float, n: int) -> float:
+    """Round value to n decimal places (baseline 2: 3.1416 style)."""
+    return round(value, n)
+
+
+def rocket_vector_magnitude(pi_value: float, step: int) -> float:
+    """Rocket diagonal magnitude sqrt((pi*step)^2 + step^2); used to show propagation of pi error."""
+    return math.sqrt((pi_value * step) ** 2 + step**2)
 
 
 def print_comparison_table(
     steps_highlight: Optional[List[int]] = None,
-    max_step: int = MAX_STEP,
     precision: int = 15,
 ) -> None:
     """
-    Print a comparison table of vector magnitudes for truncated vs rounded π.
-
-    Only rows for steps in steps_highlight are printed; the Gap column shows
-    |Vec Round − Vec Trunc|. Default highlights steps 20, 40, 60, 100.
+    Print the assignment table: at the 20th, 40th, 60th, 100th term of the Leibniz series,
+    show partial π, truncated (4 dec), rounded (4 dec), and the gap between the two baselines.
     """
     steps = steps_highlight if steps_highlight is not None else STEPS
-    col_step = "Step"
-    col_trunc = "Vec Trunc"
-    col_round = "Vec Round"
-    col_gap = "The Gap"
-    width_step = 6
-    width_val = max(28, precision + 10)
-    width_gap = max(28, precision + 10)
+    n_dec = DECIMAL_PLACES
+    col_term = "Term"
+    col_partial = "Partial pi"
+    col_trunc = "Trunc (4 dec)"
+    col_round = "Round (4 dec)"
+    col_gap = "Gap"
 
-    print("\n--- Error Propagation: Rocket Vector Quadrature (Truncated vs Rounded Pi, mpmath) ---")
-    print("(The Gap shows how the small Pi difference propagates in vector magnitude over larger steps.)\n")
+    w_term = 6
+    w_val = max(20, precision + 6)
+    w_gap = max(14, precision)
 
-    header = f"{col_step:<{width_step}} | {col_trunc:<{width_val}} | {col_round:<{width_val}} | {col_gap:<{width_gap}}"
+    print("\n--- Error Propagation: pi from Leibniz Series (Truncated vs Rounded Baseline) ---")
+    print("Formula that calculates pi: pi/4 = 1 - 1/3 + 1/5 - 1/7 + ... (Leibniz)")
+    print("Baselines: 3.1415 (truncate to 4 dec) and 3.1416 (round to 4 dec).")
+    print("Table shows the 20th, 40th, 60th, 100th term: partial pi and the gap between the two baselines.\n")
+
+    header = f"{col_term:<{w_term}} | {col_partial:<{w_val}} | {col_trunc:<{w_val}} | {col_round:<{w_val}} | {col_gap:<{w_gap}}"
     separator = "-" * len(header)
     print(header)
     print(separator)
 
-    for step in range(1, max_step + 1):
-        if step in steps:
-            val_trunc = calculate_quadrature_vector(PI_TRUNC, step)
-            val_round = calculate_quadrature_vector(PI_ROUND, step)
-            gap = abs(val_round - val_trunc)
-            print(
-                f"{step:<{width_step}} | {float(val_trunc):<{width_val}.{precision}f} | "
-                f"{float(val_round):<{width_val}.{precision}f} | {float(gap):<{width_gap}.{precision}f}"
-            )
+    for term in sorted(steps):
+        partial = compute_pi_leibniz(term)
+        trunc_val = truncate_to_n_decimals(partial, n_dec)
+        round_val = round_to_n_decimals(partial, n_dec)
+        gap = abs(round_val - trunc_val)
+        print(
+            f"{term:<{w_term}} | {partial:<{w_val}.{precision}f} | {trunc_val:<{w_val}.{n_dec}f} | "
+            f"{round_val:<{w_val}.{n_dec}f} | {gap:<{w_gap}.{precision}f}"
+        )
 
     print(separator)
     print()
 
 
-def run_turtle_visualization(
+def run_rocket_visualization(
     steps_highlight: Optional[List[int]] = None,
     max_step: int = MAX_STEP,
 ) -> None:
     """
-    Run the turtle animation: two trajectories (trunc vs round π) with amplified angle difference.
-
-    Green turtle = Vec Trunc (3.1415), cyan = Vec Round (3.1416). At steps in
-    steps_highlight, the current vector values and gap are shown on screen.
+    Rocket visualization driven by Leibniz: at each step n, pi comes from the nth term
+    (truncated vs rounded to 4 decimals). Green rocket = trunc baseline, cyan = round baseline.
     """
+    try:
+        import turtle
+    except ImportError:
+        print("Turtle not available; run with --table-only to see the table.")
+        return
+
     steps = steps_highlight if steps_highlight is not None else STEPS
     screen = turtle.Screen()
     screen.setup(900, 700)
     screen.bgcolor("#0a0a0f")
-    screen.title("Rocket Vector Quadrature Error")
+    screen.title("Rocket - pi from Leibniz (Trunc vs Round)")
     screen.setworldcoordinates(-380, -380, 380, 380)
     turtle.tracer(0)
 
     def position_from_angle(angle_rad: float, s: int) -> tuple:
         radius = s * SCALE
-        x = float(radius * mpmath.cos(angle_rad))
-        y = float(radius * mpmath.sin(angle_rad))
+        x = radius * math.cos(angle_rad)
+        y = radius * math.sin(angle_rad)
         return (x, y)
 
     t1 = turtle.Turtle()
@@ -153,7 +157,7 @@ def run_turtle_visualization(
     value_header.color("#cccccc")
     value_header.goto(0, 220)
     value_header.write(
-        f"{'Step':>4}   —   {'Vec (3.1415)':>18}   —   {'Vec (3.1416)':>18}   —   {'Gap':>18}",
+        f"{'Term':>4}   —   {'Vec (trunc)':>18}   —   {'Vec (round)':>18}   —   {'Gap':>18}",
         align="center",
         font=("Consolas", 14, "bold"),
     )
@@ -170,8 +174,13 @@ def run_turtle_visualization(
     t2.pendown()
 
     for step in range(1, max_step + 1):
-        angle_trunc = float(PI_TRUNC * step / ANGLE_DIVISOR)
-        angle_round_true = float(PI_ROUND * step / ANGLE_DIVISOR)
+        # Pi at this step from Leibniz (trunc vs round to 4 dec) — rockets connected to Leibniz
+        partial = compute_pi_leibniz(step)
+        pi_trunc = truncate_to_n_decimals(partial, DECIMAL_PLACES)
+        pi_round = round_to_n_decimals(partial, DECIMAL_PLACES)
+
+        angle_trunc = pi_trunc * step / ANGLE_DIVISOR
+        angle_round_true = pi_round * step / ANGLE_DIVISOR
         angle_round_visual = angle_trunc + (angle_round_true - angle_trunc) * VISUAL_AMPLIFICATION
 
         pos_trunc = position_from_angle(angle_trunc, step)
@@ -184,13 +193,12 @@ def run_turtle_visualization(
         time.sleep(STEP_DELAY)
 
         if step in steps:
-            val_trunc = calculate_quadrature_vector(PI_TRUNC, step)
-            val_round = calculate_quadrature_vector(PI_ROUND, step)
-            gap = abs(val_round - val_trunc)
-
+            vec_trunc = rocket_vector_magnitude(pi_trunc, step)
+            vec_round = rocket_vector_magnitude(pi_round, step)
+            gap = abs(vec_round - vec_trunc)
             value_line.clear()
             value_line.write(
-                f"{int(step):>4}   —   {float(val_trunc):>18.10f}   —   {float(val_round):>18.10f}   —   {float(gap):>18.10f}",
+                f"{int(step):>4}   —   {vec_trunc:>18.10f}   —   {vec_round:>18.10f}   —   {gap:>18.10f}",
                 align="center",
                 font=("Consolas", 14, "normal"),
             )
@@ -205,13 +213,13 @@ def run_turtle_visualization(
     label1.penup()
     label1.color("#00ff88")
     label1.goto(t1.xcor() - 12, t1.ycor())
-    label1.write("Vec Trunc", align="right", font=("Arial", 14, "bold"))
+    label1.write("Trunc (Leibniz)", align="right", font=("Arial", 14, "bold"))
     label2 = turtle.Turtle()
     label2.hideturtle()
     label2.penup()
     label2.color("#00ccff")
     label2.goto(t2.xcor() - 12, t2.ycor())
-    label2.write("Vec Round", align="right", font=("Arial", 14, "bold"))
+    label2.write("Round (Leibniz)", align="right", font=("Arial", 14, "bold"))
 
     turtle.tracer(1)
     turtle.exitonclick()
@@ -219,17 +227,17 @@ def run_turtle_visualization(
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Error Propagation Rocket: compare vector magnitude for π ≈ 3.1415 vs 3.1416.",
+        description="Computational lab: π from Leibniz series; compare trunc vs round baseline at 20, 40, 60, 100.",
     )
     parser.add_argument(
         "--table-only",
         action="store_true",
-        help="Print the comparison table and exit (no turtle window).",
+        help="Print the comparison table and exit (no visualization).",
     )
     parser.add_argument(
-        "--viz-only",
+        "--viz",
         action="store_true",
-        help="Skip the table and run only the turtle visualization.",
+        help="Show rocket visualization (pi from Leibniz at each step; trunc vs round).",
     )
     parser.add_argument(
         "--steps",
@@ -237,31 +245,27 @@ def _parse_args() -> argparse.Namespace:
         nargs="+",
         default=None,
         metavar="N",
-        help="Steps to highlight in table and animation (e.g. --steps 20 40 60 100).",
+        help="Terms to report (default: 20 40 60 100).",
     )
     args = parser.parse_args()
-    if args.table_only and args.viz_only:
-        parser.error("Cannot use both --table-only and --viz-only.")
     return args
 
 
 def main() -> None:
     args = _parse_args()
-    steps_highlight = args.steps
+    steps = args.steps
 
-    if not args.viz_only:
-        print_comparison_table(steps_highlight=steps_highlight)
+    if not args.viz:
+        print_comparison_table(steps_highlight=steps)
 
-    if not args.table_only:
-        try:
-            run_turtle_visualization(steps_highlight=steps_highlight)
-        except (KeyboardInterrupt, turtle.Terminator):
-            pass
-        except Exception as e:
-            print(f"Visualization error: {e}")
-            raise
-        if not args.viz_only:
-            input("\nPress Enter to close the simulation...")
+    if args.viz or not args.table_only:
+        if not args.table_only and not args.viz:
+            run_rocket_visualization(steps_highlight=steps)
+        elif args.viz:
+            run_rocket_visualization(steps_highlight=steps)
+
+    if not args.table_only and not args.viz:
+        input("\nPress Enter to exit...")
 
 
 if __name__ == "__main__":

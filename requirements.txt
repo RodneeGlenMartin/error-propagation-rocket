@@ -1,1 +1,1 @@
-mpmath>=1.2.0
+# No dependencies required. Python 3.7+ standard library only (turtle is built-in).
