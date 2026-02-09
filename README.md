@@ -47,8 +47,7 @@ Running `python error_propagation_rocket.py --table-only` prints the comparison 
 
 ## Requirements
 
-- **Python** 3.7 or higher
-- **turtle** (included in the Python standard library; only needed for `--viz`)
+- **Python** 3.7 or higher (standard library only; `turtle` is built-in for the visualization)
 
 ## Installation
 
@@ -64,12 +63,7 @@ Running `python error_propagation_rocket.py --table-only` prints the comparison 
    .venv\Scripts\activate   # Windows
    # source .venv/bin/activate   # macOS/Linux
    ```
-
-3. (Optional) Install dependencies if you add any later:
-   ```bash
-   pip install -r requirements.txt
-   ```
-   The script runs with the standard library only (turtle is built-in).
+   No dependencies to install — the script uses only the Python standard library (including `turtle` for the visualization).
 
 ## Usage
 
