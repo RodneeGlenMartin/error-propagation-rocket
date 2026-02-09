@@ -1,5 +1,8 @@
 # Error Propagation Rocket
 
+![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
 My Computational Lab Assignment about error propagation: how a tiny difference in π (3.1415 vs 3.1416) propagates through vector magnitude calculations.
 
 ## What It Demonstrates
@@ -8,11 +11,31 @@ This project illustrates **error propagation in numerical computation**. Using t
 
 ## Visual Preview
 
-![Rocket Vector Quadrature Error — final state at step 100](assets/100.png)
+### Console output
 
-Step-by-step views (highlighted steps): [20](assets/20.png) · [40](assets/40.png) · [60](assets/60.png) · [100](assets/100.png)
+Running `python error_propagation_rocket.py --table-only` prints the comparison table:
 
-**Animated preview:**
+![Console output: Error Propagation table](assets/console.png)
+
+### Turtle visualization (step-by-step)
+
+**Step 20**
+
+![Step 20](assets/20.png)
+
+**Step 40**
+
+![Step 40](assets/40.png)
+
+**Step 60**
+
+![Step 60](assets/60.png)
+
+**Step 100**
+
+![Step 100](assets/100.png)
+
+### Animated preview
 
 ![Animated rocket visualization](assets/rocket.gif)
 
@@ -99,6 +122,10 @@ Suitable for:
 - Demonstrating **error propagation** and sensitivity to input precision
 - Discussing **rounding vs truncation** (e.g. 3.1415 vs 3.1416)
 - Visualizing small numerical differences in a memorable way
+
+## Acknowledgments
+
+This project was completed as part of a **computational lab assignment** to demonstrate error propagation and numerical sensitivity in vector calculations.
 
 ## License
 
