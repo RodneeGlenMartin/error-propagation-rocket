@@ -1,6 +1,6 @@
 # Error Propagation Rocket
 
-A visualization demonstrating how a tiny difference in π (3.1415 vs 3.1416) propagates through vector magnitude calculations. Built for computational and numerical lab assignments.
+My Computational Lab Assignment about error propagation: how a tiny difference in π (3.1415 vs 3.1416) propagates through vector magnitude calculations.
 
 ## What It Demonstrates
 
@@ -78,7 +78,11 @@ $$
 \|\vec{v}\| = \sqrt{(\pi n)^2 + n^2} = n\sqrt{\pi^2 + 1}
 $$
 
-Using $\pi \approx 3.1415$ (truncated) vs $\pi \approx 3.1416$ (rounded) gives two slightly different magnitudes. The **Gap** in the table is $\bigl|\|\vec{v}_{\text{round}}\| - \|\vec{v}_{\text{trunc}}\|\bigr|$. As $n$ increases, this gap grows, illustrating how a small error in $\pi$ propagates through the formula.
+Using $\pi \approx 3.1415$ (truncated) vs $\pi \approx 3.1416$ (rounded) gives two slightly different magnitudes. The **Gap** in the table is the absolute difference between them:
+
+$$\text{Gap} = \left| \lVert \vec{v}_{\text{round}} \rVert - \lVert \vec{v}_{\text{trunc}} \rVert \right|$$
+
+As $n$ increases, this gap grows, illustrating how a small error in $\pi$ propagates through the formula.
 
 ## Features
 
