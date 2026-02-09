@@ -49,8 +49,8 @@ Running `python error_propagation_rocket.py --table-only` prints the comparison 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/RodneeGlenMartin/error-propagation-rocket.git
-   cd error_propagation_rocket
+   git clone https://github.com/RodneeGlenMartin/Martin_lab_assignment.git
+   cd Martin_lab_assignment
    ```
 
 2. (Recommended) Create and activate a virtual environment:
